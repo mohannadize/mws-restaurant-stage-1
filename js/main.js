@@ -80,10 +80,16 @@ window.initMap = () => {
         center: loc,
         scrollwheel: false
     });
-    // TODO: fix tab order
+    google.maps.event.addListenerOnce(map, 'tilesloaded', ()=>{
+      setTimeout(disableTabindex,2000);
+    })
+    function disableTabindex() {
+      [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x=>{
+        x.setAttribute("tabindex",-1);
+      })
+    }
     updateRestaurants();
 }
-
 /**
  * Update page and map for current restaurants.
  */

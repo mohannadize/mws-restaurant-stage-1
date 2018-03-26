@@ -12,14 +12,14 @@
 <body>
     <header>
         <nav>
-            <h1><a href="/">Restaurant Reviews</a></h1>
+            <h1><a onfocus="fixfocus()" href="/">Restaurant Reviews</a></h1>
         </nav>
     </header>
     <main id="maincontent">
-        <section id="map-container">
+        <section tabindex="-1" id="map-container">
             <div id="map"></div>
         </section>
-        <section>
+        <section tabindex="1">
             <div class="filter-options">
                 <h2>Filter Results</h2>
                 <div class="selects">
