@@ -150,7 +150,7 @@ class DBHelper {
    */
   static imageUrlForRestaurant(restaurant) {
     let ret = restaurant.photograph;
-    ret = ret.map(x=>`/img/${x}`);
+    ret = ret.map(x=>`img/${x}`);
     return ret;
   }
 
