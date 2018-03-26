@@ -14,21 +14,21 @@ let static = [
     "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
 ];
 self.addEventListener("install", (e) => {
-    caches.open(cacheNames.html).then(cache=>{
+    caches.open(cacheNames.html).then(cache => {
         cache.addAll(static)
     })
     self.skipWaiting();
 });
 self.addEventListener("fetch", (e) => {
-    let url = e.request.url.replace("/restaurant.html+./g","restaurant.html");
+    let url = e.request.url.replace("/restaurant.html+./g", "restaurant.html");
     let targetcache;
     if (url.startsWith("https://maps.googleapis.com/") || url.startsWith("https://maps.gstatic.com/")) {
         targetcache = cacheNames.map;
     } else if (e.request.url.endsWith(".jpg")) {
-        url = url.replace(/-\d+\.jpg/g,"");
+        url = url.replace(/-\d+\.jpg/g, "");
         targetcache = cacheNames.images;
     } else {
-        url = url.replace(/restaurant\.html+.*/g,"restaurant.html");
+        url = url.replace(/restaurant\.html+.*/g, "restaurant.html");
         targetcache = cacheNames.html;
     }
     e.respondWith(
