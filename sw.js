@@ -32,7 +32,7 @@ self.addEventListener("fetch", (e) => {
         targetcache = cacheNames.html;
     }
     e.respondWith(
-        caches.match(e.request).then(x => {
+        caches.match(url).then(x => {
             return x || fetch(e.request).then(response => {
                 caches.delete
                 return caches.open(targetcache).then(cache => {
