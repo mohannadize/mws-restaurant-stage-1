@@ -1,5 +1,5 @@
 let cacheNames = {
-    html: "htmlCache",
+    html: "htmlCache-1",
     images: "images",
     map: "mapCache"
 };
@@ -34,6 +34,7 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
         caches.match(e.request).then(x => {
             return x || fetch(e.request).then(response => {
+                caches.delete
                 return caches.open(targetcache).then(cache => {
                     cache.put(url, response.clone());
                     return response;
@@ -41,4 +42,17 @@ self.addEventListener("fetch", (e) => {
             });
         })
     );
+})
+self.addEventListener("activate", (e) => {
+    e.waitUntil(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.filter(function(cacheName) {
+                    return cacheName.startsWith('htmlCache') && cacheNames.html != cacheName;
+                }).map(function(cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+        })
+    )
 })
