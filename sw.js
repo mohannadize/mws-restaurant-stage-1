@@ -1,5 +1,5 @@
 let cacheNames = {
-    html: "htmlCache-2",
+    html: "htmlCache-2.1",
     images: "images",
     map: "mapCache"
 };
