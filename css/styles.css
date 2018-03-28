@@ -200,7 +200,22 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-
+#restaurants-list li a {
+  background-color: #444;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  margin: 15px 0 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+	transition:all 250ms ease;
+}
+#restaurants-list li a:hover, #restaurants-list li a:focus {
+	background-color: #990d51;
+}
 #restaurants-list a:hover, #restaurants-list a:focus {
   outline: none;
 }

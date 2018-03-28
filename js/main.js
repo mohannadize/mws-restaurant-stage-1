@@ -146,8 +146,6 @@ createRestaurantHTML = (restaurant) => {
     const li = document.createElement('li');
     const details = document.createElement("div");
     const article = document.createElement("article");
-    const aTag = document.createElement('a');
-    aTag.href = DBHelper.urlForRestaurant(restaurant);
     details.className = "details";
     const image = document.createElement('img');
     image.className = 'restaurant-img';
@@ -166,11 +164,14 @@ createRestaurantHTML = (restaurant) => {
     const address = document.createElement('p');
     address.innerHTML = restaurant.address;
     details.append(address);
+    const more = document.createElement('a');
+    more.innerHTML = 'View Details';
+    more.setAttribute("aria-label",`More details about ${restaurant.name} restaurant`);
+    more.href = DBHelper.urlForRestaurant(restaurant);
+    details.append(more);
     article.append(image);
     article.append(details);
-    aTag.append(article);
-    aTag.setAttribute("aria-label",`${restaurant.name} restaurant.`);
-    li.append(aTag);
+    li.append(article);
 
     return li;
 }
