@@ -8,26 +8,20 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    return `./data/restaurants.json`;
+    return `http://localhost:1337/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    let request = fetch(DBHelper.DATABASE_URL);
+    return request.then(x=> x.json()).then(restaurants => {
+      callback(null, restaurants);
+      return 1;
+    }).catch(()=>{
+      callback("Unable to fetch restaurants data");
+    });
   }
 
   /**
@@ -35,18 +29,14 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
-    });
+
+    let request = fetch(DBHelper.DATABASE_URL+`/${id}`);
+    request.then(x=>x.json()).then(restaurant=>{
+      callback(null,restaurant);
+      return 1;
+    }).catch(err=>{
+      console.log(err);
+    })
   }
 
   /**
@@ -149,7 +139,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    let ret = restaurant.photograph;
+    let ret = [restaurant.photograph+"-800.jpg",restaurant.photograph+"-400.jpg"];
     ret = ret.map(x=>`img/${x}`);
     return ret;
   }
