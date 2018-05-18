@@ -80,13 +80,13 @@ window.initMap = () => {
         center: loc,
         scrollwheel: false
     });
-    google.maps.event.addListenerOnce(map, 'tilesloaded', ()=>{
-      setTimeout(disableTabindex,2000);
+    google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
+        setTimeout(disableTabindex, 2000);
     })
     function disableTabindex() {
-      [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x=>{
-        x.setAttribute("tabindex",-1);
-      })
+        [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x => {
+            x.setAttribute("tabindex", -1);
+        })
     }
     updateRestaurants();
 }
@@ -166,7 +166,7 @@ createRestaurantHTML = (restaurant) => {
     details.append(address);
     const more = document.createElement('a');
     more.innerHTML = 'View Details';
-    more.setAttribute("aria-label",`More details about ${restaurant.name} restaurant`);
+    more.setAttribute("aria-label", `More details about ${restaurant.name} restaurant`);
     more.href = DBHelper.urlForRestaurant(restaurant);
     details.append(more);
     article.append(image);

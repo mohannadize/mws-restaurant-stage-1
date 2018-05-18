@@ -16,10 +16,10 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     let request = fetch(DBHelper.DATABASE_URL);
-    return request.then(x=> x.json()).then(restaurants => {
+    return request.then(x => x.json()).then(restaurants => {
       callback(null, restaurants);
       return 1;
-    }).catch(()=>{
+    }).catch(() => {
       callback("Unable to fetch restaurants data");
     });
   }
@@ -30,11 +30,11 @@ class DBHelper {
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
 
-    let request = fetch(DBHelper.DATABASE_URL+`/${id}`);
-    request.then(x=>x.json()).then(restaurant=>{
-      callback(null,restaurant);
+    let request = fetch(DBHelper.DATABASE_URL + `/${id}`);
+    request.then(x => x.json()).then(restaurant => {
+      callback(null, restaurant);
       return 1;
-    }).catch(err=>{
+    }).catch(err => {
       console.log(err);
     })
   }
@@ -139,8 +139,8 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    let ret = [restaurant.photograph+"-800.jpg",restaurant.photograph+"-400.jpg"];
-    ret = ret.map(x=>`img/${x}`);
+    let ret = [restaurant.photograph + "-800.jpg", restaurant.photograph + "-400.jpg"];
+    ret = ret.map(x => `img/${x}`);
     return ret;
   }
 
@@ -153,7 +153,8 @@ class DBHelper {
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
-      animation: google.maps.Animation.DROP}
+      animation: google.maps.Animation.DROP
+    }
     );
     return marker;
   }

@@ -2,6 +2,9 @@ const gulp = require("gulp");
 const sass = require("gulp-sass");
 const autoprefix = require("gulp-autoprefixer");
 const browserSync = require("browser-sync").create();
+const browserify = require("browserify");
+const concat = require("gulp-concat");
+const source = require('vinyl-source-stream');
 
 gulp.task("styles", function (done) {
     gulp.src("sass/**/*.scss")
@@ -11,12 +14,18 @@ gulp.task("styles", function (done) {
           }))
         .pipe(gulp.dest("./css"));
     done();
-})
-gulp.task("default", gulp.series("styles",function () {
+});
+gulp.task("idb-bundle", function (done) {
+    return browserify('./js/idb.js')
+        .bundle()
+        .pipe(source('js-bundle/idb.js'))
+        .pipe(gulp.dest('./'));
+});
+gulp.task("default", gulp.series("styles","idb-bundle",function () {
     browserSync.init({
         server: "./"
     })
     gulp.watch("index.html").on('change', browserSync.reload);
-    gulp.watch("js/**/*.js").on('change', browserSync.reload);
+    gulp.watch("js/**/*.js").on('change', gulp.series("idb-bundle", browserSync.reload));
     gulp.watch("sass/**/*.scss").on("change", gulp.series("styles", browserSync.reload));
 }));
