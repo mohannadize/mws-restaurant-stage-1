@@ -1,5 +1,5 @@
 let cacheNames = {
-    html: "htmlCache-2.1",
+    html: "htmlCache-2.2",
     images: "images",
     map: "mapCache"
 };
@@ -34,7 +34,6 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
         caches.match(url).then(x => {
             return x || fetch(e.request).then(response => {
-                caches.delete
                 return caches.open(targetcache).then(cache => {
                     cache.put(url, response.clone());
                     return response;

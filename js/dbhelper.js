@@ -1,3 +1,64 @@
+const dbPromise = window.idb.open('mws-resturant-pwa', 1, upgradeDB => {
+  switch(upgradeDB.oldVersion) {
+    case 0:
+      upgradeDB.createObjectStore("restaurants",{keyPath:"id"});
+      break;
+  }
+});
+
+const db = {
+  objectStore:"restaurants",
+  get(key) {
+    return dbPromise.then(db => {
+      return db.transaction(this.objectStore)
+        .objectStore(this.objectStore).get(key);
+    });
+  },
+  set(val) {
+    return dbPromise.then(db => {
+      const tx = db.transaction(this.objectStore, 'readwrite');
+      tx.objectStore(this.objectStore).put(val);
+      return tx.complete;
+    });
+  },
+  delete(key) {
+    return dbPromise.then(db => {
+      const tx = db.transaction(this.objectStore, 'readwrite');
+      tx.objectStore(this.objectStore).delete(key);
+      return tx.complete;
+    });
+  },
+  clear() {
+    return dbPromise.then(db => {
+      const tx = db.transaction(this.objectStore, 'readwrite');
+      tx.objectStore(this.objectStore).clear();
+      return tx.complete;
+    });
+  },
+  keys() {
+    return dbPromise.then(db => {
+      const tx = db.transaction(this.objectStore);
+      const keys = [];
+      const store = tx.objectStore(this.objectStore);
+
+      // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
+      // openKeyCursor isn't supported by Safari, so we fall back
+      (store.iterateKeyCursor || store.iterateCursor).call(store, cursor => {
+        if (!cursor) return;
+        keys.push(cursor.key);
+        cursor.continue();
+      });
+
+      return tx.complete.then(() => keys);
+    });
+  },
+  getAll() {
+    return dbPromise.then(db => {
+      return db.transaction(this.objectStore)
+        .objectStore(this.objectStore).getAll();
+    });
+  }
+};
 /**
  * Common database helper functions.
  */
@@ -8,20 +69,30 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    return `http://localhost:1337/restaurants`;
+    return `http://${location.hostname}:1337/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let request = fetch(DBHelper.DATABASE_URL);
-    return request.then(x => x.json()).then(restaurants => {
-      callback(null, restaurants);
-      return 1;
-    }).catch(() => {
-      callback("Unable to fetch restaurants data");
-    });
+    let dbReq = db.getAll();
+    dbReq.then(dbContents=>{
+      if (dbContents.length) {
+        callback(null, dbContents);
+        return 1;
+      } else {
+        return fetch(DBHelper.DATABASE_URL)
+          .then(response=>response.json())
+          .then(json=>{
+            callback(null, json);
+            json.map(restaurant=>{
+              db.set(restaurant);
+          });
+          return 1;
+        })
+      }
+    })
   }
 
   /**
@@ -30,9 +101,10 @@ class DBHelper {
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
 
-    let request = fetch(DBHelper.DATABASE_URL + `/${id}`);
-    request.then(x => x.json()).then(restaurant => {
+    let request = db.get(parseFloat(id));
+    request.then(restaurant => {
       callback(null, restaurant);
+      // console.log(restaurant);
       return 1;
     }).catch(err => {
       console.log(err);

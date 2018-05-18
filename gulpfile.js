@@ -3,7 +3,6 @@ const sass = require("gulp-sass");
 const autoprefix = require("gulp-autoprefixer");
 const browserSync = require("browser-sync").create();
 const browserify = require("browserify");
-const concat = require("gulp-concat");
 const source = require('vinyl-source-stream');
 
 gulp.task("styles", function (done) {
@@ -11,17 +10,18 @@ gulp.task("styles", function (done) {
         .pipe(sass().on("error", sass.logError))
         .pipe(autoprefix({
             browsers: ["last 2 versions"]
-          }))
+        }))
         .pipe(gulp.dest("./css"));
     done();
 });
 gulp.task("idb-bundle", function (done) {
     return browserify('./js/idb.js')
         .bundle()
-        .pipe(source('js-bundle/idb.js'))
+        .pipe(source('idb.js'))
         .pipe(gulp.dest('./'));
 });
-gulp.task("default", gulp.series("styles","idb-bundle",function () {
+
+gulp.task("default", gulp.series("styles", "idb-bundle", function () {
     browserSync.init({
         server: "./"
     })

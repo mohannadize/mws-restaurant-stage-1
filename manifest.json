@@ -1,0 +1,28 @@
+{
+  "name": "Restaurant Reviews",
+  "short_name": "RR",
+  "start_url": ".",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17191e",
+  "theme_color": "#17191e",
+  "description": "Restaurant Reviews PWA for MWS-ND",
+  "orientation":"portrait",
+  "icons": [{
+    "src": "img/icons/U-64x.png",
+    "type": "image/png",
+    "sizes": "64x64"
+  }, {
+    "src": "img/icons/U-128x.png",
+    "type": "image/png",
+    "sizes": "128x128"
+  }, {
+    "src": "img/icons/U-256x.png",
+    "type": "image/png",
+    "sizes": "256x256"
+  }, {
+    "src": "img/icons/U-512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }]
+}
