@@ -88,8 +88,8 @@ class DBHelper {
             callback(null, json);
             json.map(restaurant=>{
               db.set(restaurant);
+              return 1;
           });
-          return 1;
         })
       }
     })
