@@ -4,12 +4,16 @@ const autoprefix = require("gulp-autoprefixer");
 const browserSync = require("browser-sync").create();
 const browserify = require("browserify");
 const source = require('vinyl-source-stream');
+const uglifycss = require('gulp-uglifycss');
 
 gulp.task("styles", function (done) {
     gulp.src("sass/**/*.scss")
         .pipe(sass().on("error", sass.logError))
         .pipe(autoprefix({
             browsers: ["last 2 versions"]
+        }))
+        .pipe(uglifycss({
+            "maxLineLen":500
         }))
         .pipe(gulp.dest("./css"));
     done();

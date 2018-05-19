@@ -136,6 +136,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
     restaurants.forEach(restaurant => {
         ul.append(createRestaurantHTML(restaurant));
     });
+    var lazy = new LazyLoad({
+        elements_selector: ".restaurant-img"
+    });
     addMarkersToMap();
 }
 
@@ -151,8 +154,8 @@ createRestaurantHTML = (restaurant) => {
     image.className = 'restaurant-img';
     image.setAttribute('alt', `${restaurant.name} restaurant.`);
     const images = DBHelper.imageUrlForRestaurant(restaurant);
-    image.setAttribute('srcset', `${images[1]} , ${images[0]} 4x`);
-    image.src = images[0];
+    image.dataset.srcset = (`${images[1]} 600w, ${images[0]} 1200w`);
+    image.dataset.src = ("data-src",images[0]);
     const name = document.createElement('h3');
     name.innerHTML = restaurant.name;
     details.append(name);
@@ -175,6 +178,8 @@ createRestaurantHTML = (restaurant) => {
 
     return li;
 }
+
+
 
 /**
  * Add markers for current restaurants to the map.
