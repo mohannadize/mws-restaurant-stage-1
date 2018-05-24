@@ -27,7 +27,7 @@ self.addEventListener("install", (e) => {
     )
 });
 self.addEventListener("fetch", (e) => {
-    let url = e.request.url.replace("/restaurant.html+./g", "restaurant.html");
+    let url = e.request.url;
     let targetcache;
     if (url.startsWith("https://maps.googleapis.com/") || url.startsWith("https://maps.gstatic.com/")) {
         targetcache = cacheNames.map;
