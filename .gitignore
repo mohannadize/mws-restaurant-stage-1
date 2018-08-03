@@ -1,2 +1,7 @@
 # Node Modules Folder #
 node_modules
+build/*.html
+build/app.js
+build/css
+js/idb-bundled.js
+package-lock.json
