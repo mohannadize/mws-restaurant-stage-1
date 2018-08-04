@@ -1,3 +1,72 @@
+const starIcon = '<svg version="1.1" class="Capa_1" width="1.5em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-5 -6 55 55" xml:space="preserve">   <path class="star-icon" d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757       c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042       c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685       c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528       c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956       C22.602,0.567,25.338,0.567,26.285,2.486z"/>   </svg>';
+// document.addEventListener("click",(e)=>console.log(e.target));
+class RatingSelection {
+    constructor(target_input) {
+        this.ele = document.createElement("div");
+        if (target_input) this.target_input = target_input;
+        this.rating = null;
+        // if (target_input) this.ele.append(this.target_input);
+        this.ele.setAttribute("role", "radiogroup");
+        this.ele.setAttribute("aria-label", "Your Rating");
+        this.ele.addEventListener("keydown", (e) => {
+            (e.keyCode == 39 || e.keyCode == 37) ? e.preventDefault():0;
+            if (this.rating == null) {
+                this.rating = 1;
+            } else {
+                if (e.keyCode === 39) {
+                    if (this.rating < 5) this.rating++;
+                } else if (e.keyCode === 37) {
+                    if (this.rating > 1) this.rating--;
+                }
+            }
+            this.refresh();
+        })
+        this.stars = [];
+        this.ele.tabIndex = 0;
+        this.ele.style.display = "inline-block";
+        for (let i = 0; i < 5; i++) {
+            let star = document.createElement("a");
+            star.innerHTML = starIcon;
+            star.setAttribute("data-rating", i + 1)
+            star.style.cursor = "pointer";
+            star.style.padding = "0.25em";
+            this.stars.push(star);
+            this.ele.appendChild(star);
+            star.addEventListener("mouseenter", (ele) => {
+                this.stars.forEach((e) => {
+                    if (e.dataset.rating <= ele.currentTarget.dataset.rating) {
+                        e.children[0].children[0].style["fill"] = "orange";
+                    } else {
+                        e.children[0].children[0].style["fill"] = "transparent";
+                    }
+                })
+            })
+            star.addEventListener("mouseleave", () => this.refresh());
+            star.onclick = (e) => {
+                this.rating = e.currentTarget.dataset.rating;
+                this.refresh();
+            }
+        }
+        // return this.ele;
+    }
+    refresh() {
+        if (!this.rating) {
+            this.stars.forEach((e) => {
+                e.children[0].children[0].style["fill"] = "transparent";
+            })
+        } else {
+            this.ele.setAttribute("aria-valuenow",this.rating + ((this.rating==1)?" star":" stars"));
+            if (this.target_input) this.target_input.value = this.rating;
+            this.stars.forEach((e) => {
+                if (e.dataset.rating <= this.rating) {
+                    e.children[0].children[0].style["fill"] = "orange";
+                } else {
+                    e.children[0].children[0].style["fill"] = "transparent";
+                }
+            })
+        }
+    }
+}
 if (location.pathname.search("restaurant.html") === -1) {
     let restaurants,
         neighborhoods,
@@ -150,6 +219,9 @@ if (location.pathname.search("restaurant.html") === -1) {
         const li = document.createElement('li');
         const details = document.createElement("div");
         const article = document.createElement("article");
+        const favorite = document.createElement("a");
+        favorite.classList.add("fav-btn");
+        favorite.innerHTML = starIcon;
         details.className = "details";
         const image = document.createElement('img');
         image.className = 'restaurant-img';
@@ -175,6 +247,7 @@ if (location.pathname.search("restaurant.html") === -1) {
         details.append(more);
         article.append(image);
         article.append(details);
+        article.append(favorite);
         li.append(article);
 
         return li;

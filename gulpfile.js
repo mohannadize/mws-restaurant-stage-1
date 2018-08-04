@@ -49,6 +49,11 @@ gulp.task("default", gulp.series("html", "styles", "js", function () {
         server: "./build/"
     })
     gulp.watch("*.html").on('change', gulp.series("html",browserSync.reload));
-    gulp.watch("js/**/*.js").on('change', gulp.series("js", browserSync.reload));
+    gulp.watch([
+        "js/idb.js",
+        "js/dbhelper.js",
+        "js/main.js",
+        "js/restaurant_info.js"
+    ]).on('change', gulp.series("js", browserSync.reload));
     gulp.watch("sass/**/*.scss").on("change", gulp.series("styles", browserSync.reload));
 }));

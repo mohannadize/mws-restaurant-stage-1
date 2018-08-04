@@ -30,6 +30,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         });
     }
 
+
     /**
      * Get current restaurant from page URL.
      */
@@ -103,6 +104,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         }
     }
 
+    let rating = {};
     /**
      * Create all reviews HTML and add them to the webpage.
      */
@@ -112,10 +114,56 @@ if (location.pathname.search("restaurant.html") === 1) {
         title.innerHTML = 'Reviews';
         container.appendChild(title);
 
+        // Comment Form
+        const form = document.createElement("form");
+        const formtitle = document.createElement("h3");
+        formtitle.innerHTML = "Leave a comment";
+
+        // Name input
+        const nameInput = document.createElement("input");
+        nameInput.setAttribute("type", "text");
+        nameInput.setAttribute("placeholder", "Your name");
+
+        // User Rating Section
+        const rating = document.createElement("div");
+        let hidden = document.createElement("input");
+        hidden.id = "user-rating";
+        hidden.type = "hidden";
+        rating.id = 'ratingCont';
+        rating.innerHTML = "<span style='vertical-align:0.25em'>Rating </span>";
+        rating.append(hidden);
+
+        // Comment Input
+        const comment = document.createElement("textarea");
+        comment.setAttribute("type", "text");
+        comment.setAttribute("aria-label", "What would you like to say?");
+        comment.setAttribute("placeholder", "What would you like to say?");
+
+        // Submit Btn
+        const submit = document.createElement("a");
+        submit.setAttribute("role","button");
+        submit.style.cursor = "pointer";
+        submit.tabIndex = 0;
+        submit.onclick = (e) => {
+            submitForm(form);
+        }
+        submit.classList.add("submit-btn");
+        submit.innerHTML = "Submit";
+
+        // Getting all the pieces together
+        form.appendChild(formtitle);
+        form.appendChild(nameInput);
+        form.append(rating);
+        form.appendChild(comment);
+        form.innerHTML += "<br>";
+        form.appendChild(submit);
+        
         if (!reviews) {
             const noReviews = document.createElement('p');
             noReviews.innerHTML = 'No reviews yet!';
             container.appendChild(noReviews);
+            container.appendChild(form);
+            initRatings();
             return;
         }
         const ul = document.getElementById('reviews-list');
@@ -123,10 +171,13 @@ if (location.pathname.search("restaurant.html") === 1) {
             ul.appendChild(createReviewHTML(review));
         });
         container.appendChild(ul);
+        container.appendChild(form);
+        initRatings();
     }
 
     /**
      * Create review HTML and add it to the webpage.
+        innerDiv.appendChild(poop.ele);
      */
     createReviewHTML = (review) => {
         const li = document.createElement('li');
@@ -155,6 +206,15 @@ if (location.pathname.search("restaurant.html") === 1) {
         return li;
     }
 
+    function initRatings() {
+        let element = document.getElementById("ratingCont");
+        let hidden = document.getElementById("user-rating");
+        let ratingSelect = new RatingSelection(hidden);
+        element.append(ratingSelect.ele);
+    }
+    function submitForm(form) {
+        debugger;
+    }
     /**
      * Add restaurant name to the breadcrumb navigation menu
      */

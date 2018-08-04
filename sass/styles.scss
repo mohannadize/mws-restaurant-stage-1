@@ -9,6 +9,17 @@ body,td,th,p{
 	color: #333;
 	line-height: 1.5;
 }
+.Capa_1 {
+  > .star-icon {
+    fill:transparent;
+    stroke: orange;
+    stroke-width: 4px;
+    transition: all 250ms ease;
+    &.active {
+      fill:orange;
+    }
+  }
+}
 body {
 	background-color: #fdfdfd;
 	margin: 0;
@@ -167,6 +178,12 @@ nav h1 a {
   text-align: left;
   width: 330px;
   transition: all 250ms ease;
+  article {
+    position: relative;
+  }
+  &.favorite {
+    border-color: orange;
+  }
 }
 #restaurants-list li:focus-within, #restaurants-list li:hover {
   border-color: #777;
@@ -211,13 +228,32 @@ nav h1 a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-	transition:all 250ms ease;
+  transition:all 250ms ease;
+  &.fav-btn{
+    padding: 0.8em;
+    position: absolute;
+    top: -36px;
+    box-shadow: 0 2px 3px -1px rgba(0,0,0,0.3);
+    right: -10px;
+    background-color: #eee;
+    border: 1px solid rgb(220,220,220);
+    border-radius: 15%;
+    // border: 0;
+    cursor: pointer;
+    &:hover {
+      transform: translateY(-2px);
+      .star-icon{
+        fill: orange;
+      }
+    }
+  }
 }
 #restaurants-list li a:hover, #restaurants-list li a:focus {
-	background-color: #990d51;
-}
-#restaurants-list a:hover, #restaurants-list a:focus {
+  background-color: #990d51;
   outline: none;
+  &.fav-btn {
+    background-color: #eee;
+  }
 }
 /* ====================== Restaurant Details ====================== */
 .inside header {
@@ -286,6 +322,58 @@ nav h1 a {
 }
 #reviews-container {
   padding: 30px 40px 80px;
+  form {
+    margin-top: 20px;
+  }
+  form > input {
+    width: 40%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: .5em;
+    box-sizing: border-box;
+    transition: all 250ms ease;
+    margin-bottom: 0.5em;
+    border: 1px solid rgb(150,150,150);
+    &:focus {
+      outline: none;
+      border-color: #990d51;
+      box-shadow: 0 0 14px -2px #990d51;
+    }
+  }
+  form > textarea {
+    width: 70%;
+    height: 7em;
+    resize: vertical;
+    transition: all 250ms ease;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0.5em 0 0.5em;
+    font-size: 14px;
+    padding: 0.5em;
+    border: 1px solid rgb(150,150,150);
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 14px -2px #990d51;
+      border-color: #990d51;
+    }
+  }
+  form > .submit-btn {
+    background-color: #444;
+    border-bottom: 3px solid #eee;
+    color: #fff;
+    display: inline-block;
+    font-size: 10pt;
+    margin: 0.5em 0 0.5em;
+    padding: 8px 30px 10px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:all 250ms ease;
+    &:hover, &:focus {
+      background-color: #990d51;
+      outline: none;
+    }
+  }
 }
 #reviews-container h2 {
   color: #990d51;
@@ -349,6 +437,16 @@ nav h1 a {
  }
  .filter-options .selects {
   text-align: center;
+ }
+ #reviews-container {
+   form {
+    > input {
+      width: 100%;
+    }
+    >textarea {
+      width: 100%;
+    }
+   }
  }
 }
 @media screen and (max-width: 900px) {
