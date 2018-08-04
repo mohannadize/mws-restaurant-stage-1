@@ -110,12 +110,15 @@ if (location.pathname.search("restaurant.html") === 1) {
      */
     fillReviewsHTML = (reviews = self.restaurant.reviews) => {
         const container = document.getElementById('reviews-container');
+        container.tabIndex = 0;
         const title = document.createElement('h3');
         title.innerHTML = 'Reviews';
         container.appendChild(title);
 
         // Comment Form
         const form = document.createElement("form");
+        form.setAttribute("aria-label","Leave a comment");
+        form.tabIndex = 0;
         const formtitle = document.createElement("h3");
         formtitle.innerHTML = "Leave a comment";
 
@@ -160,6 +163,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         
         if (!reviews) {
             const noReviews = document.createElement('p');
+            container.setAttribute("aria-label","Reviews. No reviews yet!");
             noReviews.innerHTML = 'No reviews yet!';
             container.appendChild(noReviews);
             container.appendChild(form);
