@@ -105,23 +105,40 @@ nav h1 a {
     content: "/\00a0";
 }
 
+#breadcrumb li+#favorite-btn:before {
+  content: none;
+}
 /* Add a color to all links inside the list */
-#breadcrumb li a {
-    color: #0275d8;
-    text-decoration: none;
+#breadcrumb li {
+    a {
+      color: #0275d8;
+      text-decoration: none;
+    }
+    &#favorite-btn {
+      a {
+      text-decoration: none;
+      color:black;
+      }
+    }
 }
 
 /* Add a color on mouse-over */
-#breadcrumb li a:hover {
-    color: #01447e;
-    text-decoration: underline;
+#breadcrumb li {
+    a:hover {
+      color: #01447e;
+      text-decoration: underline;
+    }
+  &#favorite-btn {
+      a:hover,a.active {
+      text-decoration: none;
+      color:orange;
+      }
+    }
 }
 /* ====================== Map ====================== */
 #map {
   text-align: center;
-  overflow-x: scroll;
   img {
-    height: 98%;
     margin:auto;
   }
   background-color: #ccc;

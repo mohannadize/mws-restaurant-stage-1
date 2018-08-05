@@ -30,6 +30,7 @@ class RatingSelection {
             star.setAttribute("data-rating", i + 1)
             star.style.cursor = "pointer";
             star.style.padding = "0.25em";
+            star.setAttribute("role","radio");
             this.stars.push(star);
             this.ele.appendChild(star);
             star.addEventListener("mouseenter", (ele) => {
@@ -138,26 +139,11 @@ if (location.pathname.search("restaurant.html") === -1) {
     }
 
     /**
-     * Initialize Google map, called from HTML.
+     * Initialize Static map
      */
     window.initMap = () => {
-        // let loc = {
-        //     lat: 40.722216,
-        //     lng: -73.987501
-        // };
-        // self.map = new google.maps.Map(document.getElementById('map'), {
-        //     zoom: 12,
-        //     center: loc,
-        //     scrollwheel: false
-        // });
-        // google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
-        //     setTimeout(disableTabindex, 2000);
-        // })
-        // function disableTabindex() {
-        //     [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x => {
-        //         x.setAttribute("tabindex", -1);
-        //     })
-        // }
+        let map = document.querySelector("#map img");
+        map.src = "https://www.mapquestapi.com/staticmap/v5/map?locations=40.713829,-73.989667|marker-sm-cc0000-000000||40.683555,-73.966393|marker-sm-cc0000-000000||40.747143,-73.985414|marker-sm-cc0000-000000||40.722216,-73.987501|marker-sm-cc0000-000000||40.705089,-73.933585|marker-sm-cc0000-000000||40.674925,-74.016162|marker-sm-cc0000-000000||40.727397,-73.983645|marker-sm-cc0000-000000||40.726584,-74.002082|marker-sm-cc0000-000000||40.743797,-73.950652|marker-sm-cc0000-000000||40.743394,-73.954235|marker-sm-cc0000-000000&key=oDfUd4gVTtidN7UmyZO07vm4KR8re4ak&size="+window.innerWidth+",400";
         updateRestaurants();
     }
     /**
@@ -269,7 +255,7 @@ if (location.pathname.search("restaurant.html") === -1) {
     }
 
 
-    updateRestaurants();
+    window.initMap();
 }
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("sw.js", { scope: './' });

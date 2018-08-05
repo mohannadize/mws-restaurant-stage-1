@@ -34,7 +34,7 @@ gulp.task("js", gulp.series("idb-bundle", function () {
         "js/restaurant_info.js"
     ])
         .pipe(concat("app.js"))
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest("./build/"))
 }))
 gulp.task("sw",function(){

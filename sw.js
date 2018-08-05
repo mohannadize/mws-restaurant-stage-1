@@ -1,6 +1,6 @@
 importScripts("idb-bundled.js");
 let cacheNames = {
-    html: "htmlCache-2.5",
+    html: "htmlCache-2.6",
     images: "images"
 };
 let static = [
@@ -10,6 +10,7 @@ let static = [
     "https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.7.1/lazyload.min.js",
     "app.js",
     "idb-bundled.js",
+    "manifest.json",
     "restaurant.html",
     "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
 ];
@@ -23,11 +24,6 @@ self.addEventListener("install", (e) => {
         })
     )
 });
-// self.addEventListener('activate', function (event) {
-//     if (self.clients && clients.claim) {
-//         clients.claim();
-//     }
-// });
 async function postComments() {
     let posts = await db.getAll(db.toBe);
     posts.map(post => {
@@ -51,7 +47,7 @@ async function postComments() {
 self.addEventListener("fetch", (e) => {
     let url = e.request.url;
     let targetcache;
-    if (e.request.url.endsWith(".jpg")) {
+    if (url.endsWith(".jpg")) {
         url = url.replace(/-\d+\.jpg/g, "");
         targetcache = cacheNames.images;
     } else {
@@ -61,7 +57,15 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
         caches.match(url).then(x => {
             return x || fetch(e.request).then(response => {
-                return response;
+                if (url.startsWith("https://www.mapquestapi.com/")) {
+                    targetcache = cacheNames.images;
+                    return caches.open(targetcache).then(cache => {
+                        cache.put(url, response.clone());
+                        return response;
+                    })
+                } else {
+                    return response;
+                }
             });
         })
     );

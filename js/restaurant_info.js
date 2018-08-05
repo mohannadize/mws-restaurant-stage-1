@@ -3,9 +3,13 @@ if (location.pathname.search("restaurant.html") === 1) {
     var map;
 
     /**
-     * Initialize Google map, called from HTML.
+     * Initialize Static
      */
     window.init = () => {
+        let mapCont = document.querySelector("#map");
+        let map = document.querySelector("#map img");
+        map.src = "https://www.mapquestapi.com/staticmap/v5/map?locations=40.713829,-73.989667|marker-sm-cc0000-000000||40.683555,-73.966393|marker-sm-cc0000-000000||40.747143,-73.985414|marker-sm-cc0000-000000||40.722216,-73.987501|marker-sm-cc0000-000000||40.705089,-73.933585|marker-sm-cc0000-000000||40.674925,-74.016162|marker-sm-cc0000-000000||40.727397,-73.983645|marker-sm-cc0000-000000||40.726584,-74.002082|marker-sm-cc0000-000000||40.743797,-73.950652|marker-sm-cc0000-000000||40.743394,-73.954235|marker-sm-cc0000-000000&key=oDfUd4gVTtidN7UmyZO07vm4KR8re4ak&size="+mapCont.offsetWidth+","+mapCont.offsetHeight;
+
         fetchRestaurantFromURL((error, restaurant) => {
             if (error) { // Got an error!
                 console.error(error);
@@ -58,6 +62,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         if (self.restaurant.is_favorite) a.classList.add("active");
         a.onclick = function () {
             this.classList.toggle("active");
+            this.blur();
             DBHelper.favorite(restaurant.id);
         }
         a.addEventListener("keydown", function (e) {
@@ -143,6 +148,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         nameInput.name = "user-name";
         nameInput.setAttribute("required", "true");
         nameInput.setAttribute("placeholder", "Your name");
+        nameInput.setAttribute("aria-label", "Your name");
 
         // User Rating Section
         const rating = document.createElement("div");
