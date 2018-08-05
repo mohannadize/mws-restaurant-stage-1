@@ -5,4 +5,6 @@
 
 This project works with the [mws-restaurant-stage-3](https://github.com/udacity/mws-restaurant-stage-3).
 
-Run `gulp build` then run a server from the `/build/` folder.
+Run 
+```gulp build```
+then run a server from the `/build/` folder.
