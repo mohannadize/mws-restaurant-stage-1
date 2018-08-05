@@ -9,7 +9,7 @@ class RatingSelection {
         this.ele.setAttribute("role", "radiogroup");
         this.ele.setAttribute("aria-label", "Your Rating");
         this.ele.addEventListener("keydown", (e) => {
-            (e.keyCode == 39 || e.keyCode == 37) ? e.preventDefault():0;
+            (e.keyCode == 39 || e.keyCode == 37) ? e.preventDefault() : 0;
             if (this.rating == null) {
                 this.rating = 1;
             } else {
@@ -55,7 +55,7 @@ class RatingSelection {
                 e.children[0].children[0].style["fill"] = "transparent";
             })
         } else {
-            this.ele.setAttribute("aria-valuenow",this.rating + ((this.rating==1)?" star":" stars"));
+            this.ele.setAttribute("aria-valuenow", this.rating + ((this.rating == 1) ? " star" : " stars"));
             if (this.target_input) this.target_input.value = this.rating;
             this.stars.forEach((e) => {
                 if (e.dataset.rating <= this.rating) {
@@ -141,23 +141,23 @@ if (location.pathname.search("restaurant.html") === -1) {
      * Initialize Google map, called from HTML.
      */
     window.initMap = () => {
-        let loc = {
-            lat: 40.722216,
-            lng: -73.987501
-        };
-        self.map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 12,
-            center: loc,
-            scrollwheel: false
-        });
-        google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
-            setTimeout(disableTabindex, 2000);
-        })
-        function disableTabindex() {
-            [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x => {
-                x.setAttribute("tabindex", -1);
-            })
-        }
+        // let loc = {
+        //     lat: 40.722216,
+        //     lng: -73.987501
+        // };
+        // self.map = new google.maps.Map(document.getElementById('map'), {
+        //     zoom: 12,
+        //     center: loc,
+        //     scrollwheel: false
+        // });
+        // google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
+        //     setTimeout(disableTabindex, 2000);
+        // })
+        // function disableTabindex() {
+        //     [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x => {
+        //         x.setAttribute("tabindex", -1);
+        //     })
+        // }
         updateRestaurants();
     }
     /**
@@ -209,7 +209,6 @@ if (location.pathname.search("restaurant.html") === -1) {
         var lazy = new LazyLoad({
             elements_selector: ".restaurant-img"
         });
-        addMarkersToMap();
     }
 
     /**
@@ -217,11 +216,26 @@ if (location.pathname.search("restaurant.html") === -1) {
      */
     createRestaurantHTML = (restaurant) => {
         const li = document.createElement('li');
+        if (restaurant.is_favorite) li.classList.add("favorite");
         const details = document.createElement("div");
         const article = document.createElement("article");
         const favorite = document.createElement("a");
         favorite.classList.add("fav-btn");
         favorite.innerHTML = starIcon;
+        favorite.href = "javascript:void(0)";
+        favorite.setAttribute("aria-label", `Favorite ${restaurant.name} restaurant.`)
+        favorite.setAttribute("role", "button");
+        favorite.onclick = (e) => {
+            e.currentTarget.parentNode.parentNode.classList.toggle("favorite");
+            DBHelper.favorite(restaurant.id);
+            document.activeElement.blur();
+        }
+        favorite.addEventListener("keydown", function (e) {
+            if (e.keyCode == 13 || e.keyCode == 32) {
+                e.preventDefault();
+                this.click();
+            }
+        })
         details.className = "details";
         const image = document.createElement('img');
         image.className = 'restaurant-img';
@@ -241,6 +255,7 @@ if (location.pathname.search("restaurant.html") === -1) {
         address.innerHTML = restaurant.address;
         details.append(address);
         const more = document.createElement('a');
+        more.classList.add("details-btn");
         more.innerHTML = 'View Details';
         more.setAttribute("aria-label", `More details about ${restaurant.name} restaurant`);
         more.href = DBHelper.urlForRestaurant(restaurant);
@@ -254,21 +269,28 @@ if (location.pathname.search("restaurant.html") === -1) {
     }
 
 
-
-    /**
-     * Add markers for current restaurants to the map.
-     */
-    addMarkersToMap = (restaurants = self.restaurants) => {
-        restaurants.forEach(restaurant => {
-            // Add marker to the map
-            const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-            google.maps.event.addListener(marker, 'click', () => {
-                window.location.href = marker.url
-            });
-            self.markers.push(marker);
-        });
-    }
+    updateRestaurants();
 }
 if ('serviceWorker' in navigator) {
-    // navigator.serviceWorker.register("sw.js",{scope: './'});
+    navigator.serviceWorker.register("sw.js", { scope: './' });
 }
+(function () {
+    const body = document.querySelector("body");
+    let pooopop = document.createElement("a");
+    pooopop.innerText = "Test";
+    pooopop.onclick = () => {
+        console.log("Button is fkn working");
+        navigator.serviceWorker.ready.then(e => {
+            console.log("1");
+            return e.sync.register("poop");
+        }).then(e => {
+            console.log("Sync Reg")
+        }).catch(e => 
+            console.error(e)
+        );
+        console.log("last");
+    }
+    body.append(pooopop);
+})()
+// const body = "poop";
+// 

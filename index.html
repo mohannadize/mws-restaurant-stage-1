@@ -22,7 +22,10 @@
     </header>
     <main id="maincontent">
         <section tabindex="-1" role="application" id="map-container">
-            <div id="map"></div>
+            <div id="map" style="height: 400px;">
+
+                <img src="https://www.mapquestapi.com/staticmap/v5/map?locations=40.713829,-73.989667|marker-sm-cc0000-000000||40.683555,-73.966393|marker-sm-cc0000-000000||40.747143,-73.985414|marker-sm-cc0000-000000||40.722216,-73.987501|marker-sm-cc0000-000000||40.705089,-73.933585|marker-sm-cc0000-000000||40.674925,-74.016162|marker-sm-cc0000-000000||40.727397,-73.983645|marker-sm-cc0000-000000||40.726584,-74.002082|marker-sm-cc0000-000000||40.743797,-73.950652|marker-sm-cc0000-000000||40.743394,-73.954235|marker-sm-cc0000-000000&key=oDfUd4gVTtidN7UmyZO07vm4KR8re4ak&size=900,400@2x" alt="Map for locations of the restaurants.">
+            </div>
         </section>
         <section tabindex="0">
             <div class="filter-options">
@@ -40,8 +43,9 @@
         </section>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.7.1/lazyload.min.js"></script>    
+    <script src="idb-bundled.js"></script>
     <script type="application/javascript" charset="utf-8" src="app.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcvft2zIR-NrdqaauV19MnsQ51REvvDF0&libraries=places&callback=initMap"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcvft2zIR-NrdqaauV19MnsQ51REvvDF0&libraries=places&callback=initMap"></script> -->
     <footer id="footer">
         Copyright (c) 2018
         <a href="/">

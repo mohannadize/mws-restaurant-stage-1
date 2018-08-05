@@ -118,8 +118,12 @@ nav h1 a {
 }
 /* ====================== Map ====================== */
 #map {
-  height: 400px;
-  width: 100%;
+  text-align: center;
+  overflow-x: scroll;
+  img {
+    height: 98%;
+    margin:auto;
+  }
   background-color: #ccc;
 }
 /* ====================== Restaurant Filtering ====================== */
@@ -183,6 +187,14 @@ nav h1 a {
   }
   &.favorite {
     border-color: orange;
+    .fav-btn {
+      background-color: orange;
+      border-color:rgb(231, 150, 0);
+    }
+    .star-icon {
+      fill: white;
+      stroke: white;
+    }
   }
 }
 #restaurants-list li:focus-within, #restaurants-list li:hover {
@@ -242,17 +254,20 @@ nav h1 a {
     cursor: pointer;
     &:hover {
       transform: translateY(-2px);
-      .star-icon{
-        fill: orange;
-      }
+      // .star-icon{
+      //   fill: orange;
+      // }
+    }
+    &:focus {
+      border-color: #990d51;
+      box-shadow: 0 0 14px -2px #990d51;
     }
   }
 }
 #restaurants-list li a:hover, #restaurants-list li a:focus {
-  background-color: #990d51;
   outline: none;
-  &.fav-btn {
-    background-color: #eee;
+  &.details-btn {
+    background-color: #990d51;    
   }
 }
 /* ====================== Restaurant Details ====================== */
@@ -268,6 +283,7 @@ nav h1 a {
 .inside #map-container {
   background: blue none repeat scroll 0 0;
   height: 87%;
+  overflow: hidden;
   position: fixed;
   right: 0;
   top: 80px;
@@ -277,6 +293,10 @@ nav h1 a {
   background-color: #ccc;
   height: 100%;
   width: 100%;
+  img {
+    max-height: 100%;
+    // width: 2px;
+  }
 }
 .inside #footer {
   bottom: 0;
@@ -293,6 +313,45 @@ nav h1 a {
   margin: 15px 0 30px;
   text-transform: uppercase;
   line-height: 1.1;
+  position: relative;
+}
+#favorite-btn {
+  float: right;
+  a {    
+    font-size: 16px;
+    outline: none;
+    padding: 1em 1em 0.5em;
+    transition: all 250ms ease;
+    color:#6b4915;
+    text-align: right;
+    border: 1px solid transparent;
+    > span {
+      vertical-align: 0.25em;
+    }
+    &:hover {
+      color:orange;
+      border-color: #ccc;
+      .star-icon {
+        fill: orange;
+        stroke: orange;
+      }
+    }
+    .star-icon {
+      stroke: #6b4915;
+    }
+    &.active {
+      color:orange;
+      .star-icon {
+        fill: orange;
+        stroke: orange;
+      }
+    }
+    &:focus {
+      border-color: #990d51;
+      box-shadow: 0 0 14px -2px #990d51;
+      // text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  } 
 }
 #restaurant-img {
 	width: 100%;
@@ -322,8 +381,36 @@ nav h1 a {
 }
 #reviews-container {
   padding: 30px 40px 80px;
+  outline: none;
+  position: relative;
   form {
     margin-top: 20px;
+    outline: none;
+  }
+  form > .thank-div {
+    z-index:2;
+    position:absolute;
+    top:0;
+    left:0;
+    pointer-events: none;
+    opacity: 0;
+    background-color:rgba(0,0,0,0.6);
+    width:100%;
+    height:100%;
+    color:white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3em;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 7px -2px rgba(0,0,0,0.4);
+    text-align: center;
+    padding-top: 15%;
+    box-sizing: border-box;
+    transition: all 500ms ease;
+    transform: scale(1.05);
+    &.show {
+      pointer-events: initial;
+      opacity: 1;
+    }
   }
   form > input {
     width: 40%;
@@ -351,6 +438,15 @@ nav h1 a {
     padding: 0.5em;
     border: 1px solid rgb(150,150,150);
     box-sizing: border-box;
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 14px -2px #990d51;
+      border-color: #990d51;
+    }
+  }
+  form #ratingCont > div {
+    border: 1px solid transparent;    
+    transition: all 250ms ease;
     &:focus {
       outline: none;
       box-shadow: 0 0 14px -2px #990d51;
@@ -431,6 +527,16 @@ nav h1 a {
 }
 
 @media screen and (max-width: 600px) {
+  .inside #breadcrumb {
+    #favorite-btn {
+      a {
+        padding: 1em 0.5em 0.33em;
+        > span {
+          display: none;
+        }
+      }
+    }
+  }
  .filter-options {
   flex-direction: column;
   padding-top: 10px;
@@ -452,6 +558,9 @@ nav h1 a {
 @media screen and (max-width: 900px) {
   .inside #breadcrumb {
     width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    
   }
   .inside #maincontent section {
     position: relative;

@@ -1,7 +1,6 @@
 # Node Modules Folder #
 node_modules
-build/*.html
-build/app.js
-build/css
+build
+!build/img
 js/idb-bundled.js
 package-lock.json

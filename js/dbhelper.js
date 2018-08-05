@@ -1,64 +1,3 @@
-const dbPromise = window.idb.open('mws-resturant-pwa', 1, upgradeDB => {
-  switch(upgradeDB.oldVersion) {
-    case 0:
-      upgradeDB.createObjectStore("restaurants",{keyPath:"id"});
-      break;
-  }
-});
-
-const db = {
-  objectStore:"restaurants",
-  get(key) {
-    return dbPromise.then(db => {
-      return db.transaction(this.objectStore)
-        .objectStore(this.objectStore).get(key);
-    });
-  },
-  set(val) {
-    return dbPromise.then(db => {
-      const tx = db.transaction(this.objectStore, 'readwrite');
-      tx.objectStore(this.objectStore).put(val);
-      return tx.complete;
-    });
-  },
-  delete(key) {
-    return dbPromise.then(db => {
-      const tx = db.transaction(this.objectStore, 'readwrite');
-      tx.objectStore(this.objectStore).delete(key);
-      return tx.complete;
-    });
-  },
-  clear() {
-    return dbPromise.then(db => {
-      const tx = db.transaction(this.objectStore, 'readwrite');
-      tx.objectStore(this.objectStore).clear();
-      return tx.complete;
-    });
-  },
-  keys() {
-    return dbPromise.then(db => {
-      const tx = db.transaction(this.objectStore);
-      const keys = [];
-      const store = tx.objectStore(this.objectStore);
-
-      // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-      // openKeyCursor isn't supported by Safari, so we fall back
-      (store.iterateKeyCursor || store.iterateCursor).call(store, cursor => {
-        if (!cursor) return;
-        keys.push(cursor.key);
-        cursor.continue();
-      });
-
-      return tx.complete.then(() => keys);
-    });
-  },
-  getAll() {
-    return dbPromise.then(db => {
-      return db.transaction(this.objectStore)
-        .objectStore(this.objectStore).getAll();
-    });
-  }
-};
 /**
  * Common database helper functions.
  */
@@ -216,19 +155,12 @@ class DBHelper {
     return ret;
   }
 
-  /**
-   * Map marker for a restaurant.
-   */
-  static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP
-    }
-    );
-    return marker;
-  }
 
+  static async favorite(restaurant_id) {
+    let response = await db.get(restaurant_id);
+    let newState = (response.is_favorite) ? false:true;
+    response.is_favorite = newState;
+    db.set(response);
+    fetch(`http://${location.hostname}:1337/restaurants/${restaurant_id}/?is_favorite=${newState}`,{method:"PUT"}).then(e=>e.json());
+  }
 }

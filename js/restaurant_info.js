@@ -5,27 +5,12 @@ if (location.pathname.search("restaurant.html") === 1) {
     /**
      * Initialize Google map, called from HTML.
      */
-    window.initMap = () => {
+    window.init = () => {
         fetchRestaurantFromURL((error, restaurant) => {
             if (error) { // Got an error!
                 console.error(error);
             } else {
-                self.map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 16,
-                    center: restaurant.latlng,
-                    scrollwheel: false
-                });
-                google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
-                    setTimeout(disableTabindex, 2000);
-                })
-
-                function disableTabindex() {
-                    [].slice.apply(document.querySelectorAll(`#map-container *`)).map(x => {
-                        x.setAttribute("tabindex", -1);
-                    })
-                }
                 fillBreadcrumb();
-                DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
             }
         });
     }
@@ -63,6 +48,28 @@ if (location.pathname.search("restaurant.html") === 1) {
         const name = document.getElementById('restaurant-name');
         name.innerHTML = restaurant.name;
 
+        const favorite = document.getElementById('favorite-btn');
+        const a = document.createElement("a");
+        // favorite.classList.add("fav-btn");
+        a.innerHTML = "<span>Favorite</span> " + starIcon;
+        a.href = "javascript:void(0)";
+        a.setAttribute("aria-label", `Favorite ${restaurant.name} restaurant`);
+        a.setAttribute("role", "button");
+        if (self.restaurant.is_favorite) a.classList.add("active");
+        a.onclick = function () {
+            this.classList.toggle("active");
+            DBHelper.favorite(restaurant.id);
+        }
+        a.addEventListener("keydown", function (e) {
+            if (e.keyCode == 13 || e.keyCode == 32) {
+                e.preventDefault();
+                this.click();
+            }
+        })
+        favorite.appendChild(a);
+        // const restaurantCont = document.getElementById("restaurant-container");
+        // name.append(favorite);
+
         const address = document.getElementById('restaurant-address');
         address.innerHTML = restaurant.address;
 
@@ -80,8 +87,9 @@ if (location.pathname.search("restaurant.html") === 1) {
         if (restaurant.operating_hours) {
             fillRestaurantHoursHTML();
         }
+        fetch(`http://${location.hostname}:1337/reviews/?restaurant_id=` + restaurant.id)
+            .then(e => e.json()).then(e => fillReviewsHTML(e))
         // fill reviews
-        fillReviewsHTML();
     }
 
     /**
@@ -117,14 +125,23 @@ if (location.pathname.search("restaurant.html") === 1) {
 
         // Comment Form
         const form = document.createElement("form");
-        form.setAttribute("aria-label","Leave a comment");
+        form.setAttribute("aria-label", "Leave a comment");
         form.tabIndex = 0;
+        form.style.position = "relative";
+        form.method = "POST";
+        form.name = "post-comment";
         const formtitle = document.createElement("h3");
         formtitle.innerHTML = "Leave a comment";
+
+        // Thank Div
+        const thanks = document.createElement("div");
+        thanks.classList.add("thank-div");
 
         // Name input
         const nameInput = document.createElement("input");
         nameInput.setAttribute("type", "text");
+        nameInput.name = "user-name";
+        nameInput.setAttribute("required", "true");
         nameInput.setAttribute("placeholder", "Your name");
 
         // User Rating Section
@@ -132,6 +149,7 @@ if (location.pathname.search("restaurant.html") === 1) {
         let hidden = document.createElement("input");
         hidden.id = "user-rating";
         hidden.type = "hidden";
+        hidden.name = "user-rating";
         rating.id = 'ratingCont';
         rating.innerHTML = "<span style='vertical-align:0.25em'>Rating </span>";
         rating.append(hidden);
@@ -139,31 +157,98 @@ if (location.pathname.search("restaurant.html") === 1) {
         // Comment Input
         const comment = document.createElement("textarea");
         comment.setAttribute("type", "text");
+        comment.setAttribute("required", "true");
+        comment.name = "user-comment";
         comment.setAttribute("aria-label", "What would you like to say?");
         comment.setAttribute("placeholder", "What would you like to say?");
 
         // Submit Btn
         const submit = document.createElement("a");
-        submit.setAttribute("role","button");
+        submit.setAttribute("role", "button");
         submit.style.cursor = "pointer";
         submit.tabIndex = 0;
+        submit.addEventListener("keydown", function (e) {
+            if (e.keyCode == 13 || e.keyCode == 32) {
+                e.preventDefault();
+                this.click();
+            }
+        })
         submit.onclick = (e) => {
-            submitForm(form);
+            // form.submit();
+            // console.log(document.forms);
+            let error;
+            [].slice.apply(document.forms[0]).reverse().forEach(e => {
+                if (!e.value) {
+                    error = 1;
+                    if (e.name != "user-rating") {
+                        e.focus();
+                    } else {
+                        let ele = document.querySelector("#ratingCont > div");
+                        ele.focus();
+                    }
+                    return;
+                }
+            });
+            if (error) return;
+            let body = {
+                "restaurant_id": self.restaurant.id,
+                "name": document.forms[0]["user-name"].value,
+                "rating": document.forms[0]["user-rating"].value,
+                "comments": document.forms[0]["user-comment"].value
+            };
+            if (!navigator.onLine && (navigator.serviceWorker && navigator.serviceWorker.controller.state === "activated")) {
+                navigator.serviceWorker.ready.then(e => {
+                    return db.set(body, db.toBe).then(() => {
+                        e.sync.register("post-comment").then(x => {
+                            let thanks = document.querySelector(".thank-div");
+                            thanks.innerText = "Your comment will be posted as soon as you are online.";
+                            thanks.classList.toggle("show");
+                            setTimeout(() => { thanks.classList.toggle("show"); }, 3000);
+                            [].slice.apply(document.forms[0]).forEach(e => e.value = "");
+
+                        }).catch(err => {
+                            alert("An error has occured.");
+                            console.error(err);
+                        });
+                    }).catch(e => {
+                        alert("An error has occured.");
+                        console.error(e);
+                        return 0;
+                    });
+                })
+            } else {
+                fetch(`http://${location.hostname}:1337/reviews/`, {
+                    method: "POST",
+                    body: JSON.stringify(body)
+                }).then((e) => {
+                    return e.json();
+                }).then(e => {
+                    const ul = document.getElementById('reviews-list');
+                    // console.log(e); return;
+                    [].slice.apply(document.forms[0]).forEach(e => e.value = "");
+                    ul.appendChild(createReviewHTML(e));
+                    let thanks = document.querySelector(".thank-div");
+                    thanks.innerText = "Thank You";
+                    thanks.classList.toggle("show");
+                    setTimeout(() => { thanks.classList.toggle("show"); }, 3000);
+                }).catch(e=>console.error(e));
+            }
         }
         submit.classList.add("submit-btn");
         submit.innerHTML = "Submit";
 
         // Getting all the pieces together
         form.appendChild(formtitle);
+        form.appendChild(thanks);
         form.appendChild(nameInput);
         form.append(rating);
         form.appendChild(comment);
         form.innerHTML += "<br>";
         form.appendChild(submit);
-        
+
         if (!reviews) {
             const noReviews = document.createElement('p');
-            container.setAttribute("aria-label","Reviews. No reviews yet!");
+            container.setAttribute("aria-label", "Reviews. No reviews yet!");
             noReviews.innerHTML = 'No reviews yet!';
             container.appendChild(noReviews);
             container.appendChild(form);
@@ -191,9 +276,8 @@ if (location.pathname.search("restaurant.html") === 1) {
         dividor.className = "dividor";
         name.innerHTML = review.name;
         divs[0].appendChild(name);
-
         const date = document.createElement('p');
-        date.innerHTML = review.date;
+        date.innerHTML = new Date(review.createdAt).toLocaleString();
         divs[0].appendChild(date);
 
         const rating = document.createElement('p');
@@ -202,7 +286,6 @@ if (location.pathname.search("restaurant.html") === 1) {
         li.appendChild(divs[0]);
         li.appendChild(divs[1]);
         li.appendChild(dividor);
-        li.appendChild(document.createElement("div"))
         const comments = document.createElement('p');
         comments.innerHTML = review.comments;
         li.appendChild(comments);
@@ -216,17 +299,18 @@ if (location.pathname.search("restaurant.html") === 1) {
         let ratingSelect = new RatingSelection(hidden);
         element.append(ratingSelect.ele);
     }
-    function submitForm(form) {
-        debugger;
-    }
+
     /**
      * Add restaurant name to the breadcrumb navigation menu
      */
     fillBreadcrumb = (restaurant = self.restaurant) => {
         const breadcrumb = document.getElementById('breadcrumb');
+        const favoriteDiv = document.getElementById("favorite-btn");
+        favoriteDiv.id = "favorite-btn";
         const li = document.createElement('li');
         li.innerHTML = restaurant.name;
         breadcrumb.appendChild(li);
+        breadcrumb.appendChild(favoriteDiv);
     }
 
     /**
@@ -244,4 +328,5 @@ if (location.pathname.search("restaurant.html") === 1) {
             return '';
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
+    window.init();
 }
