@@ -24,52 +24,21 @@ self.addEventListener("install", (e) => {
         })
     )
 });
-async function postComments() {
-    let posts = await db.getAll(db.toBe);
-    posts.map(post => {
-        let body = {
-            restaurant_id: post.restaurant_id,
-            name: post.name,
-            comments: post.comments,
-            rating: post.rating
-        };
-        let response = fetch(`http://${location.hostname}:1337/reviews/`,{method:"POST",body:JSON.stringify(body)}).then(event => {
-            if (event.status.toString().startsWith("20")) {
-                db.delete(post.id,db.toBe);
-                return 1;
-            } else {
-                return 0;
-            }
-        }).catch(err => {console.error(err);return 0});
-        return response;
-    })
-}
 self.addEventListener("fetch", (e) => {
     let url = e.request.url;
-    let targetcache;
-    if (url.endsWith(".jpg")) {
-        url = url.replace(/-\d+\.jpg/g, "");
-        targetcache = cacheNames.images;
-    } else {
-        url = url.replace(/restaurant\.html+.*/g, "restaurant.html");
-        targetcache = cacheNames.html;
+    url = url.replace(/restaurant\.html+.*/g, "restaurant.html");
+    if (url.endsWith(".jpg") || url.startsWith("https://www.mapquestapi.com/")) {
+        e.respondWith(storeImages(e));
+        return;
     }
     e.respondWith(
         caches.match(url).then(x => {
             return x || fetch(e.request).then(response => {
-                if (url.startsWith("https://www.mapquestapi.com/")) {
-                    targetcache = cacheNames.images;
-                    return caches.open(targetcache).then(cache => {
-                        cache.put(url, response.clone());
-                        return response;
-                    })
-                } else {
-                    return response;
-                }
+                return response;
             });
         })
     );
-})
+});
 self.addEventListener("activate", (e) => {
     e.waitUntil(
         caches.keys().then(function (ketchups) {
@@ -82,11 +51,38 @@ self.addEventListener("activate", (e) => {
             );
         })
     )
-})
+});
 self.addEventListener("sync", function (e) {
     console.log(e);
     if (e.tag == "post-comment") {
         e.waitUntil(postComments())
     }
-})
-
+});
+async function postComments() {
+    let posts = await db.getAll(db.toBe);
+    posts.map(post => {
+        let body = {
+            restaurant_id: post.restaurant_id,
+            name: post.name,
+            comments: post.comments,
+            rating: post.rating
+        };
+        let response = fetch(`http://${location.hostname}:1337/reviews/`, { method: "POST", body: JSON.stringify(body) }).then(event => {
+            if (event.status.toString().startsWith("20")) {
+                db.delete(post.id, db.toBe);
+                return 1;
+            } else {
+                return 0;
+            }
+        }).catch(err => { console.error(err); return 0 });
+        return response;
+    })
+};
+async function storeImages(e) {
+    let url = e.request.url.replace(/-\d+\.jpg/g, "");
+    let response = await fetch(e.request);
+    return caches.open(cacheNames.images).then(cache => {
+        cache.put(url, response.clone());
+        return response;
+    })
+}
