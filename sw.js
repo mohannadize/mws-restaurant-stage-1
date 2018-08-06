@@ -80,9 +80,12 @@ async function postComments() {
 };
 async function storeImages(e) {
     let url = e.request.url.replace(/-\d+\.jpg/g, "");
-    let response = await fetch(e.request);
-    return caches.open(cacheNames.images).then(cache => {
-        cache.put(url, response.clone());
-        return response;
-    })
+    return caches.match(url).then(x=>{
+        return x || fetch(e.request).then(response=>{
+            return caches.open(cacheNames.images).then(cache=>{
+                cache.put(url, response.clone());
+                return response;
+            })
+        })
+    });
 }
