@@ -1,10 +1,10 @@
 importScripts("idb-bundled.js");
 let cacheNames = {
-    html: "htmlCache-3.0",
+    html: "htmlCache-3.1",
     images: "images"
 };
 let static = [
-    "/",
+    "./",
     "index.html",
     "css/styles.css",
     "https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.7.1/lazyload.min.js",
