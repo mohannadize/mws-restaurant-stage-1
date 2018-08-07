@@ -3,8 +3,9 @@
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-This project works with the [mws-restaurant-stage-3](https://github.com/udacity/mws-restaurant-stage-3) API,please run it in background with the server by following the instructions found in the `README.md` there.
+This project depends on the [mws-restaurant-stage-3](https://github.com/udacity/mws-restaurant-stage-3) API,please run it in background with the server by following the instructions found in the `README.md` there.
 
+### Live version available at [https://mohannadize.github.io/mws-restaurant-stage-1/](https://mohannadize.github.io/mws-restaurant-stage-1/)
 
 # Installation
 
