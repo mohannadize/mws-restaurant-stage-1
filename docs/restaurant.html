@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Normalize.css for better cross-browser consistency -->
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <!-- Main CSS file -->
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Restaurant Info</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name='theme-color' content='#17191e'>
+    <link rel='icon' sizes='128x128' href='./img/icons/U-128x.png'>
+</head>
+
+<body class="inside">
+    <!-- Beginning header -->
+    <header>
+        <!-- Beginning nav -->
+        <nav>
+            <h1><a href="./">Restaurant Reviews</a></h1>
+        </nav>
+        <!-- Beginning breadcrumb -->
+        <ul id="breadcrumb">
+            <li><a aria-label="Back to the homepage." href="./">Home</a></li>
+            <li id="favorite-btn"></li>
+        </ul>
+        <!-- End breadcrumb -->
+        <!-- End nav -->
+    </header>
+    <!-- End header -->
+    <!-- Beginning main -->
+    <main id="maincontent">
+        <!-- Beginning map -->
+        <section role="application" id="map-container">
+            <div id="map">
+                <img src="https://www.mapquestapi.com/staticmap/v5/map?locations=40.713829,-73.989667|marker-sm-cc0000-000000||40.683555,-73.966393|marker-sm-cc0000-000000||40.747143,-73.985414|marker-sm-cc0000-000000||40.722216,-73.987501|marker-sm-cc0000-000000||40.705089,-73.933585|marker-sm-cc0000-000000||40.674925,-74.016162|marker-sm-cc0000-000000||40.727397,-73.983645|marker-sm-cc0000-000000||40.726584,-74.002082|marker-sm-cc0000-000000||40.743797,-73.950652|marker-sm-cc0000-000000||40.743394,-73.954235|marker-sm-cc0000-000000&key=oDfUd4gVTtidN7UmyZO07vm4KR8re4ak&size=600,500@2x" alt="Map for locations of the restaurants.">
+            </div>
+        </section>
+        <!-- End map -->
+        <!-- Beginning restaurant -->
+        <section id="restaurant-container">
+            <h2 id="restaurant-name"></h2>
+            <img id="restaurant-img">
+            <p id="restaurant-cuisine"></p>
+            <p id="restaurant-address"></p>
+            <table id="restaurant-hours"></table>
+        </section>
+        <!-- end restaurant -->
+        <div class="line-break"></div>
+        <!-- Beginning reviews -->
+        <section id="reviews-container">
+            <ul id="reviews-list"></ul>
+        </section>
+        <!-- End reviews -->
+    </main>
+    <!-- End main -->
+    <!-- Beginning footer -->
+    <footer id="footer">
+        Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    </footer>
+    <!-- End footer -->
+    <!-- Beginning scripts -->
+    <!-- Database helpers -->
+    <script src="idb-bundled.js"></script>
+    <script src="app.js"></script>
+    <!-- Main javascript file -->
+    <!-- Google Maps -->
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcvft2zIR-NrdqaauV19MnsQ51REvvDF0&libraries=places&callback=initMap"></script> -->
+    <!-- End scripts -->
+</body>
+
+</html>
