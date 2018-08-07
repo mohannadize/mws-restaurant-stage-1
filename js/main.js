@@ -253,30 +253,8 @@ if (location.pathname.search("restaurant.html") === -1) {
 
         return li;
     }
-
-
     window.initMap();
 }
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("sw.js", { scope: './' });
 }
-(function () {
-    const body = document.querySelector("body");
-    let pooopop = document.createElement("a");
-    pooopop.innerText = "Test";
-    pooopop.onclick = () => {
-        console.log("Button is fkn working");
-        navigator.serviceWorker.ready.then(e => {
-            console.log("1");
-            return e.sync.register("poop");
-        }).then(e => {
-            console.log("Sync Reg")
-        }).catch(e => 
-            console.error(e)
-        );
-        console.log("last");
-    }
-    body.append(pooopop);
-})()
-// const body = "poop";
-// 
