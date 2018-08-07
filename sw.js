@@ -1,6 +1,6 @@
 importScripts("idb-bundled.js");
 let cacheNames = {
-    html: "htmlCache-2.6",
+    html: "htmlCache-3",
     images: "images"
 };
 let static = [
